@@ -1,4 +1,10 @@
 import falcon
+
+import rpy2.situation
+message = ''
+for row in rpy2.situation.iter_info():
+    print(row)
+
 import rpy2.robjects.packages as rpackages
 import rpy2.robjects as robjects
 import sys
@@ -21,17 +27,19 @@ class DiagResource(object):
         resp.status = falcon.HTTP_200  # This is the default status
         
         # capture each of the blocking vars
-        cap_gender = req.params["gender"]
-        cap_education = req.params["education"]
         cap_age = req.params["age"]
+        cap_gender = req.params["gender"]
+        cap_ethnicity = req.params["ethnicity"]
         cap_party = req.params["party"]
+        cap_employment = req.params["employment"]
+        cap_education = req.params["education"]
         cap_id = req.params["id"]
         py_session = req.params["session"] + ".RData"
         
-        py_exact_var = ["gender", "education", "age", "party"]
-        py_exact_val = [cap_gender, cap_education, cap_age, cap_party]
+        py_exact_var = ["age", "gender", "ethnicity", "party", "employment", "education"]
+        py_exact_val = [cap_age, cap_gender, cap_ethnicity, cap_party, cap_employment, cap_education]
         
-        if (len(req.params["party"]) == 2):
+        if (len(req.params["party"]) > 0):
             robjects.r('''
                            f <- function(id, exact_var, exact_val, session) {
                             
@@ -41,9 +49,9 @@ class DiagResource(object):
                                 seqout <- seqblock(query = FALSE
                                                 , id.vars = "ID"
                                                 , id.vals = id
-                                                , n.tr = 4
-                                                , tr.names = c("likert_C", "likertplus_C", "QV_C", "QVN") 
-                                                , assg.prob = c(4/7, 1/7, 1/7, 1/7)
+                                                , n.tr = 3
+                                                , tr.names = c("T1", "T2", "Control") 
+                                                , assg.prob = c(1/3, 1/3, 1/3)
                                                 , exact.vars = exact_var
                                                 , exact.vals = exact_val
                                                 , file.name = session)
@@ -52,9 +60,9 @@ class DiagResource(object):
                                 seqout <- seqblock(query = FALSE
                                                 , object = session
                                                 , id.vals = id
-                                                , n.tr = 4
-                                                , tr.names = c("likert_C", "likertplus_C", "QV_C", "QVN") 
-                                                , assg.prob = c(4/7, 1/7, 1/7, 1/7)
+                                                , n.tr = 3
+                                                , tr.names = c("T1", "T2", "Control") 
+                                                , assg.prob = c(1/3, 1/3, 1/3)
                                                 , exact.vals = exact_val
                                                 , file.name = session)
                             }
