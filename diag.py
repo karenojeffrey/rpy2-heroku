@@ -33,7 +33,7 @@ class DiagResource(object):
         cap_id = req.params["id"]
         py_session = req.params["session"] + ".RData"
         
-        py_exact_var = ["age", "gender", "ethnicity", "party", "employment", "education"]
+        py_exact_var = ["age", "gender", "ethnicity", "party", "employment", "education", "shock"]
         py_exact_val = [cap_age, cap_gender, cap_ethnicity, cap_party, cap_employment, cap_education, cap_shock]
         
         robjects.r('''
