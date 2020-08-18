@@ -29,11 +29,12 @@ class DiagResource(object):
         cap_party = req.params["party"]
         cap_employment = req.params["employment"]
         cap_education = req.params["education"]
+        cap_shock = req.params["shock"]
         cap_id = req.params["id"]
         py_session = req.params["session"] + ".RData"
         
         py_exact_var = ["age", "gender", "ethnicity", "party", "employment", "education"]
-        py_exact_val = [cap_age, cap_gender, cap_ethnicity, cap_party, cap_employment, cap_education]
+        py_exact_val = [cap_age, cap_gender, cap_ethnicity, cap_party, cap_employment, cap_education, cap_shock]
         
         robjects.r('''
                        f <- function(id, exact_var, exact_val, session) {
@@ -44,9 +45,9 @@ class DiagResource(object):
                             seqout <- seqblock(query = FALSE
                                             , id.vars = "ID"
                                             , id.vals = id
-                                            , n.tr = 3
-                                            , tr.names = c("T1", "T2", "Control") 
-                                            , assg.prob = c(1/3, 1/3, 1/3)
+                                            , n.tr = 4
+                                            , tr.names = c("T1", "T2", "T3", "Placebo") 
+                                            , assg.prob = c(1/4, 1/4, 1/4, 1/4)
                                             , exact.vars = exact_var
                                             , exact.vals = exact_val
                                             , file.name = session)
@@ -55,9 +56,9 @@ class DiagResource(object):
                             seqout <- seqblock(query = FALSE
                                             , object = session
                                             , id.vals = id
-                                            , n.tr = 3
-                                            , tr.names = c("T1", "T2", "Control") 
-                                            , assg.prob = c(1/3, 1/3, 1/3)
+                                            , n.tr = 4
+                                            , tr.names = c("T1", "T2", "T3", "Placebo") 
+                                            , assg.prob = c(1/4, 1/4, 1/4, 1/4)
                                             , exact.vals = exact_val
                                             , file.name = session)
                         }
